@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react'
+import apiService from "../src/service/apiService"
+const App = () => {
+  const [questions,setQuestions]=useState([])
+  const fetchPosts = async () => {
+    try {
+      const result = await apiService.getQuestions();
+      setQuestions(result);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
 
-function App() {
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  console.log("test: ",questions);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
