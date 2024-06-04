@@ -12,39 +12,40 @@ import {
   TableHead,
   TableRow,
   Paper,
+  CardContent,
+  CardActions,
+  Card,
+  CardMedia,
+  Grid,
 } from "@mui/material";
+
 const QuestionPage = () => {
   const [questions, setQuestions] = useState([]);
-  const fetchPosts = async () => {
-    try {
-      const result = await apiService.getQuestions();
-      setQuestions(result.slice(0,10));
-    } catch (error) {
-      console.error("Error fetching postsQuestions:", error);
-    }
-  };
-console.log("sorular: ",questions);
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState([]);
   const [isClickable, setIsClickable] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState("");
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsClickable(true);
-    }, 3000); 
+  const fetchPosts = async () => {
+    try {
+      const result = await apiService.getQuestions();
+      setQuestions(result.slice(0, 3));
+    } catch (error) {
+      console.error("Error fetching postsQuestions:", error);
+    }
+  };
 
-    const nextQuestionTimer = setTimeout(() => {
-      handleNextQuestion();
-    }, 6000); 
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  useEffect(() => {
+    const enableClickTimer = setTimeout(() => {
+      setIsClickable(true);
+    }, 3000);
 
     return () => {
-      clearTimeout(timer);
-      clearTimeout(nextQuestionTimer);
+      clearTimeout(enableClickTimer);
     };
   }, [currentQuestionIndex]);
 
@@ -53,15 +54,21 @@ console.log("sorular: ",questions);
       const newSelectedAnswers = [...selectedAnswers];
       newSelectedAnswers[currentQuestionIndex] = answer;
       setSelectedAnswers(newSelectedAnswers);
-      setSelectedAnswer(answer)
-    } 
+      setSelectedAnswer(answer);
+      setIsClickable(true);
+      setTimeout(() => {
+        handleNextQuestion();
+      }, 6000);
+    }
   };
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setIsClickable(true);
-      setSelectedAnswer("")
+      setSelectedAnswer("");
+      setIsClickable(false);
+    } else {
+      setCurrentQuestionIndex(questions.length);
     }
   };
 
@@ -91,22 +98,50 @@ console.log("sorular: ",questions);
   }
 
   return (
-    <Box>
-      <Typography variant="h5">{currentQuestion.title}</Typography>
-      <Box>
-        {["A", "B", "C", "D"].map((option) => (
-          <Button
-            key={option}
-            variant="contained"
-            onClick={() => handleAnswerClick(option)}
-            disabled={!isClickable}
-            style={{ margin: "10px" }}
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height="100vh"
+      bgcolor="#f0f0f0"
+    >
+      <Card variant="outlined" style={{ width: "50%", height: "50%" }}>
+        <CardContent>
+          <Typography variant="h6" align="left">
+            Soru {currentQuestionIndex + 1}/{questions.length}
+          </Typography>
+          <Typography variant="h5" align="center" style={{ margin: "20px 0" }}>
+            {currentQuestion?.title}
+          </Typography>
+          <Box
+            display="flex"
+            justifyContent="center"
+            flexDirection="column"
+            alignItems="center"
           >
-            {option}
-          </Button>
-        ))}
-      </Box>
-      {selectedAnswer && <Typography variant="h6">Seçtiğiniz cevap: {selectedAnswer}</Typography>}
+            {["A", "B", "C", "D"].map((option) => (
+              <Button
+                key={option}
+                variant="contained"
+                onClick={() => handleAnswerClick(option)}
+                disabled={!isClickable}
+                style={{ margin: "10px", width: "80%" }}
+              >
+                {option}
+              </Button>
+            ))}
+          </Box>
+          {selectedAnswer && (
+            <Typography
+              variant="h6"
+              align="center"
+              style={{ marginTop: "20px" }}
+            >
+              Seçtiğiniz cevap: {selectedAnswer}
+            </Typography>
+          )}
+        </CardContent>
+      </Card>
     </Box>
   );
 };
