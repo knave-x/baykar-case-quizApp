@@ -144,18 +144,17 @@ const QuestionPage = () => {
               align="left"
               style={{ marginBottom: "20px" }}
             >
-              1. You will have 30 seconds for each question.
+              1.You will have 30 seconds for each question.
               <br />
-              2. Each question will advance automatically.
+              2.Each question will advance automatically.
               <br />
-              3. You cannot mark for the first 10 seconds.
+              3.You cannot mark for the first 10 seconds.
               <br />
-              4. You can see your answers at the end of the quiz.
+              4.You can see your answers at the end of the quiz.
               <br />
               5.You can change your answer before time runs out.
-              <br/>
+              <br />
               6.You can't switch between questions
-
             </Typography>
             <Box display="flex" justifyContent="center">
               <Button
@@ -185,7 +184,7 @@ const QuestionPage = () => {
             Questions {currentQuestionIndex + 1}/{questions.length}
           </Typography>
           <Typography variant="h5" align="center" style={{ margin: "20px 0" }}>
-            Question: {currentQuestion?.title}
+            {currentQuestion?.title}
           </Typography>
 
           <Box
